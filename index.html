@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Simple Token</title>
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+</head>
+<body>
+    <h1>Simple Token</h1>
+
+    <h2>Mint Token</h2>
+    <input id="mintAddress" type="text" placeholder="Address">
+    <input id="mintAmount" type="number" placeholder="Amount">
+    <button type="button" onclick="mint()">Mint</button>
+
+    <h2>Transfer Token</h2>
+    <input id="transferAddress" type="text" placeholder="Address">
+    <input id="transferAmount" type="number" placeholder="Amount">
+    <button type="button" onclick="transfer()">Transfer</button>
+
+    <h2>Check Balance</h2>
+    <input id="balanceAddress" type="text" placeholder="Address">
+    <button type="button" onclick="checkBalance()">Check Balance</button>
+    <p id="balance"></p>
+
+    <script>
+        const abi = [
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "to",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "mint",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "to",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "transfer",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "account",
+				"type": "address"
+			}
+		],
+		"name": "balanceOf",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "balances",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "name",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "symbol",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "totalSupply",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+];
+        const contractAddress = '0xF299D3556145764D90c17bAAc6d3dcF863f963c5';
+        const web3 = new Web3(window.ethereum);
+        const contract = new web3.eth.Contract(abi, contractAddress);
+
+        async function mint() {
+            const address = document.getElementById('mintAddress').value;
+            const amount = document.getElementById('mintAmount').value;
+            const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+            await contract.methods.mint(address, amount).send({ from: accounts[0] });
+        }
+
+        async function transfer() {
+            const address = document.getElementById('transferAddress').value;
+            const amount = document.getElementById('transferAmount').value;
+            const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+            await contract.methods.transfer(address, amount).send({ from: accounts[0] });
+        }
+
+        async function checkBalance() {
+            const address = document.getElementById('balanceAddress').value;
+            const balance = await contract.methods.balanceOf(address).call();
+            document.getElementById('balance').innerText = 'Balance: ' + balance;
+        }
+    </script>
+</body>
+</html>
